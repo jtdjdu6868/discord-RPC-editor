@@ -1,12 +1,12 @@
-from os import execlp,listdir,path
-from time import time,sleep
+from os import execlp, listdir, path
+from time import time, sleep
 from pypresence import Presence
 from threading import Thread
 from webbrowser import open_new
-from json import load,dumps
+from json import load, dumps
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QFontDatabase
-from PyQt5.QtWidgets import QMessageBox,QWidget, QApplication, QShortcut, QMainWindow,QSystemTrayIcon, QMenu, QAction
+from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication, QShortcut, QMainWindow, QSystemTrayIcon, QMenu, QAction
 import qdarktheme
 import sys
 from pystray import Icon as pyicon, MenuItem as item
@@ -16,7 +16,7 @@ RPC_cur_stat = "狀態未啟動"
 file_title = ""
 
 class discord_act:
-    def __init__(self,id,title):
+    def __init__(self, id, title):
         try:
             print("start init discord_act")
             self.cur_start = True
@@ -26,16 +26,16 @@ class discord_act:
             self.stop = False
             self.cur_start = False
         except Exception as e:
-            err_code = ['result','存取被拒','Could not find Discord installed and running on this machine.']
+            err_code = ['result', '存取被拒', 'Could not find Discord installed and running on this machine.']
             for i in err_code:
                 if i in str(e):
                     raise Exception(f"Discord似乎未正確啟動\n您可以嘗試以下方法進行問題排解\n\n1.請確保已啟動Discord\n2.若Discord已開啟，請重新啟動修改器\n3.若Discord是以管理員權限運行，請以正常權限啟動Discord，或是以管理員模式啟動修改器\n\n若問題持續發生\n請直接截圖並私訊作者 Evanlau#0857 回報問題\n\n錯誤碼:{e}")
             raise Exception(e)
     
-    def get_stored_data(self,id,title):
+    def get_stored_data(self, id, title):
         try:
             print("get_stored_data")
-            with open(f'./data/{title}.json',encoding="UTF-8",mode="r") as json_file:
+            with open(f'./data/{title}.json', encoding="UTF-8", mode="r") as json_file:
                 data = load(json_file)
                 try:
                     self.detail = data["User_stored_stat"]["detail"]
@@ -44,7 +44,6 @@ class discord_act:
                 try:
                     self.stat = data["User_stored_stat"]["stat"]
                 except:
-
                     self.stat = ""
                 try:
                     self.pic = data["User_stored_stat"]["pic"]
@@ -92,7 +91,7 @@ class discord_act:
                     self.button_2_activate = False
                     
             json_file.close()
-            print(self.stat,self.pic,self.pic_text)
+            print(self.stat, self.pic, self.pic_text)
             return
         except:
             self.detail = ""
@@ -109,13 +108,13 @@ class discord_act:
             self.button_2_url = ""
             self.button_2_activate = False
 
-    def set_act(self,stat,detail,pic,pic_text,small_pic,small_pic_text,time_set,time_mode,time_stamp,buttons):
+    def set_act(self, stat, detail, pic, pic_text, small_pic, small_pic_text, time_set, time_mode, time_stamp, buttons):
         print("set_act")
         global RPC_cur_stat
         instance = True
         try:
             if time_set == False:
-                self.app.update(state=stat,details=detail,large_image=pic,large_text=pic_text,small_image=small_pic,small_text=small_pic_text,instance=instance,buttons=buttons)
+                self.app.update(state=stat, details=detail, large_image=pic, large_text=pic_text, small_image=small_pic, small_text=small_pic_text, instance=instance, buttons=buttons)
             else:
                 cur_time = int(time())
                 if time_mode == "從零開始":
@@ -135,7 +134,7 @@ class discord_act:
                         return
                     start_time_stamp = None
                     end_time_stamp = time_stamp
-                self.app.update(state=stat,details=detail,large_image=pic,large_text=pic_text,small_image=small_pic,small_text=small_pic_text,instance=instance,start=start_time_stamp,end=end_time_stamp,buttons=buttons)
+                self.app.update(state=stat, details=detail, large_image=pic, large_text=pic_text, small_image=small_pic, small_text=small_pic_text, instance=instance, start=start_time_stamp, end=end_time_stamp, buttons=buttons)
             RPC_cur_stat = "狀態設定成功"
         except Exception as e:
             RPC_cur_stat = "狀態設定失敗"
@@ -156,7 +155,7 @@ class discord_act:
         except Exception as e:
             e = str(e)
             if "result" in e:
-                msg_box.warning("錯誤", f"狀態設定錯誤\n請重新啟動discord後再試一次\n若問題持續發生\n請私訊作者 Evanlau#0857 回報問題\n錯誤碼:{e}")
+                msg_box.warning("錯誤", f"狀態設定錯誤\n請重新啟動Discord後再試一次\n若問題持續發生\n請私訊作者 Evanlau#0857 回報問題\n錯誤碼:{e}")
             else:
                 raise Exception(e)
     
@@ -173,8 +172,8 @@ class discord_act:
             self.state_thread.start()
 
 class ctrl_GUI:
-    def __init__(self,dir_list):
-        print("start discord game state")
+    def __init__(self, dir_list):
+        print("start Discord game state")
         self.dir_list = dir_list
         self.test = False
         self.stop = True
@@ -195,8 +194,8 @@ class ctrl_GUI:
         self.ctrl_GUI.hide()
         image = Image.open("./lib/icon.png")
         self.stop = False
-        menu=(item('開啟修改器視窗',self.iconActivated,checked=lambda item: self.test), item('關閉狀態修改器', self.close_all))
-        self.icon = pyicon(name='discord狀態修改器', title='discord狀態修改器',icon=image, menu=menu)
+        menu=(item('開啟修改器視窗', self.iconActivated, checked=lambda item: self.test), item('關閉狀態修改器', self.close_all))
+        self.icon = pyicon(name='Discord狀態修改器', title='Discord狀態修改器', icon=image, menu=menu)
         self.icon.run()
 
     def close_all(self):
@@ -295,8 +294,8 @@ class ctrl_GUI:
             time_mode = None
         print(time_stamp)
         try:
-            self.act.set_act(stat=stat,detail=detail,pic=pic,pic_text=pic_text,small_pic=small_pic,
-            small_pic_text=small_pic_text,time_set=time_set,time_mode=time_mode,time_stamp=time_stamp,buttons=buttons)
+            self.act.set_act(stat=stat, detail=detail, pic=pic, pic_text=pic_text, small_pic=small_pic,
+            small_pic_text=small_pic_text, time_set=time_set, time_mode=time_mode, time_stamp=time_stamp, buttons=buttons)
         except Exception as e:
             print("錯誤")
             msg_box.warning("錯誤", e)
@@ -334,22 +333,22 @@ class ctrl_GUI:
         json_file.close()
         RPC_cur_stat = "已儲存新的狀態設定檔"
     
-    def _init_discord_act(self,file):
+    def _init_discord_act(self, file):
         print("_init_discord_act")
         try:
             if len(file) == 0:
                 msg_box.warning("錯誤", "App ID不能為空")
                 return
             if file in self.dir_list:
-                with open(f'./data/{file}.json',encoding="UTF-8",mode="r") as json_file:
+                with open(f'./data/{file}.json', encoding="UTF-8", mode="r") as json_file:
                     data = load(json_file)
                     self.app_id = data["User_stored_stat"]["app_id"]
                 json_file.close()
-                self.act = discord_act(self.app_id,title=file)
+                self.act = discord_act(self.app_id, title=file)
                 self.new_file = True
             else:
                 self.app_id = file
-                self.act = discord_act(id=self.app_id,title=int(self.app_id))
+                self.act = discord_act(id=self.app_id, title=int(self.app_id))
                 self.new_file = False
             self.start()
         except Exception as e:
@@ -1008,7 +1007,7 @@ class ctrl_GUI:
     
     def retranslateUi(self, ctrl_GUI):
         _translate = QtCore.QCoreApplication.translate
-        ctrl_GUI.setWindowTitle(_translate("ctrl_GUI", "discord狀態修改器"))
+        ctrl_GUI.setWindowTitle(_translate("ctrl_GUI", "Discord狀態修改器"))
         self.status_lable.setText(_translate("ctrl_GUI", "副標"))
         self.detail_lable.setText(_translate("ctrl_GUI", "主標"))
         self.detail_entry.setPlaceholderText(_translate("ctrl_GUI", "請輸入狀態標題"))
@@ -1071,21 +1070,21 @@ class ctrl_GUI:
         button_2_title = self.act.button_2_title
         button_2_url = self.act.button_2_url
 
-        self.status_entry.setText(_translate("ctrl_GUI",status))
-        self.detail_entry.setText(_translate("ctrl_GUI",detail))
-        self.bigPicture_Entry.setText(_translate("ctrl_GUI",bigPicture))
-        self.bigPicture_name_Entry.setText(_translate("ctrl_GUI",bigPicture_name))
-        self.smallPicture_Entry.setText(_translate("ctrl_GUI",smallPicture))
-        self.smallPicture_name_Entry.setText(_translate("ctrl_GUI",smallPicture_name))
-        self.button_title_Entry_1.setText(_translate("ctrl_GUI",button_1_title))
-        self.button_url_Entry_1.setText(_translate("ctrl_GUI",button_1_url))
-        self.button_title_Entry_2.setText(_translate("ctrl_GUI",button_2_title))
-        self.button_url_Entry_2.setText(_translate("ctrl_GUI",button_2_url))
+        self.status_entry.setText(_translate("ctrl_GUI", status))
+        self.detail_entry.setText(_translate("ctrl_GUI", detail))
+        self.bigPicture_Entry.setText(_translate("ctrl_GUI", bigPicture))
+        self.bigPicture_name_Entry.setText(_translate("ctrl_GUI", bigPicture_name))
+        self.smallPicture_Entry.setText(_translate("ctrl_GUI", smallPicture))
+        self.smallPicture_name_Entry.setText(_translate("ctrl_GUI", smallPicture_name))
+        self.button_title_Entry_1.setText(_translate("ctrl_GUI", button_1_title))
+        self.button_url_Entry_1.setText(_translate("ctrl_GUI", button_1_url))
+        self.button_title_Entry_2.setText(_translate("ctrl_GUI", button_2_title))
+        self.button_url_Entry_2.setText(_translate("ctrl_GUI", button_2_url))
 
         self.cur_status.setText(_translate("ctrl_GUI", status))
         self.cur_detail.setText(_translate("ctrl_GUI", detail))
-        self.cur_BigPicture.setText(_translate("ctrl_GUI",f"{bigPicture_name}({bigPicture})"))
-        self.cur_SmallPicture.setText(_translate("ctrl_GUI",f"{smallPicture_name}({smallPicture})"))
+        self.cur_BigPicture.setText(_translate("ctrl_GUI", f"{bigPicture_name}({bigPicture})"))
+        self.cur_SmallPicture.setText(_translate("ctrl_GUI", f"{smallPicture_name}({smallPicture})"))
         self.cur_button_1.setText(_translate("ctrl_GUI", f"{button_1_title}({button_1_url})"))
         self.cur_button_2.setText(_translate("ctrl_GUI", f"{button_2_title}({button_2_url})"))
         self.cur_user.setText(_translate("ctrl_GUI", file_title))
@@ -1125,7 +1124,7 @@ class ctrl_GUI:
 
         self.add_button_connect(ctrl_GUI)       
     
-    def add_button_connect(self,ctrl_GUI):
+    def add_button_connect(self, ctrl_GUI):
         self.save_data_button_2.clicked.connect(self.open_save_window)
         self.save_data_button.clicked.connect(self.overwrite_user_state)
         self.activate_status_button.clicked.connect(self.set_new_state)
@@ -1403,7 +1402,7 @@ class Ui_Save_As:
         self.pushButton.clicked.connect(self.save_user_state)
         QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Return), self.lineEdit, activated=self.save_user_state)
 
-    def show_window(self,dictionary):
+    def show_window(self, dictionary):
         self.dictionary = dictionary
         self.Save_As.show()
 
@@ -1422,7 +1421,7 @@ class Ui_Save_As:
             self.Save_As.destroy()
             global file_title
             file_title = self.lineEdit.text()
-            msg_box.information("discord狀態修改器", "儲存成功")
+            msg_box.information("Discord狀態修改器", "儲存成功")
             
 
 class Ui_restart_ui(object):
@@ -1485,14 +1484,14 @@ class Ui_restart_ui(object):
         self.restart_ui.destroy()
 
 class msg_window(QWidget):
-    def information(self,title:str,message):
+    def information(self, title:str, message):
         message = str(message)
-        QMessageBox.information(self,title,message)
+        QMessageBox.information(self, title, message)
 
-    def warning(self,title:str,message):
+    def warning(self, title:str, message):
         print("錯誤")
         message = str(message)
-        QMessageBox.warning(self,title,message)
+        QMessageBox.warning(self, title, message)
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
